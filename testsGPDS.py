@@ -23,6 +23,7 @@ def leer_pdf(nombre_archivo):
 
             # Mezclar la lista para obtener el orden aleatorio
             random.shuffle(paginas)
+            cont=1
             for pagina_num in paginas:
                 pagina = lector_pdf.pages[pagina_num]
                 texto = pagina.extract_text()
@@ -30,7 +31,7 @@ def leer_pdf(nombre_archivo):
                 match = re.search(patron, texto, re.DOTALL)
                 
                 if match:
-                    pregunta_numero = match.group(1).replace("\n", " ")
+                    #pregunta_numero = match.group(1).replace("\n", " ")
                     pregunta = match.group(2).replace("\n", " ")
                     respuesta_b = match.group(4).replace("\n", " ")
                     respuesta_a = match.group(3).replace("\n", " ")
@@ -38,7 +39,9 @@ def leer_pdf(nombre_archivo):
                     respuesta_d = match.group(6).replace("\n", " ")
                     respuesta_correcta = match.group(7).replace("\n", " ")
 
-                    print(f"Pregunta número: {pregunta_numero}")
+                    totales+=1
+
+                    print(f"Pregunta número: {totales}")
                     print(pregunta)
                     print(f"A: {respuesta_a}")
                     print(f"B: {respuesta_b}")
@@ -50,7 +53,7 @@ def leer_pdf(nombre_archivo):
                         correctas+=1
                     elif entrada != "":
                         falladas+=1
-                    totales+=1           
+                               
                 else:
                     print(f"No se encontró un patrón válido en la página {pagina_num + 1}\n")
             return totales, correctas, falladas
