@@ -4,13 +4,14 @@ from PyPDF2 import PdfReader
 import re
 import random
 import textwrap
+import math
 
 RESPUESTAS_VALIDAS = ["A","B","C","D",""]
 
 def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrectas):
     if respuestas_totales <= 0:
         return 0
-    nota = (respuestas_correctas - (respuestas_incorrectas / 3)) / respuestas_totales * 10
+    nota = (respuestas_correctas - math.floor(respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
 
 def leer_pdf(nombre_archivo):
