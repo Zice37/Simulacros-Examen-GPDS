@@ -4,6 +4,8 @@ from PyPDF2 import PdfReader
 import re
 import random
 
+RESPUESTAS_VALIDAS = ["A","B","C","D",""]
+
 def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrectas):
     nota = (respuestas_correctas - (respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
@@ -47,13 +49,21 @@ def leer_pdf(nombre_archivo):
                     print(f"B: {respuesta_b}")
                     print(f"C: {respuesta_c}")
                     print(f"D: {respuesta_d}")
-                    entrada = input("Introduce tu respuesta:")
-                    print(f"Respuesta correcta: {respuesta_correcta}\n")
-                    if entrada.capitalize() == respuesta_correcta:
+                    entrada = input("Introduce tu respuesta:").capitalize()
+                    while entrada not in RESPUESTAS_VALIDAS:
+                        print("\tRespuesta no comprendida")
+                        entrada = input("Introduce tu respuesta:").capitalize()
+                    if entrada == respuesta_correcta:
                         correctas+=1
+                        print("\tAcierto registrado")
                     elif entrada != "":
                         falladas+=1
-                               
+                        print("\tFallo registrado")
+                    else:
+                        print("\tBlanco registrado")
+                    
+                    print(f"Respuesta correcta: {respuesta_correcta}\n")
+
                 else:
                     print(f"No se encontró un patrón válido en la página {pagina_num + 1}\n")
             return totales, correctas, falladas
