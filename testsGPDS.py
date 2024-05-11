@@ -71,6 +71,7 @@ def leer_pdf(nombre_archivo):
     except FileNotFoundError:
         print("El archivo no existe.")
     except KeyboardInterrupt:
+        totales-=1  #asumimos que si cierra por teclado no ha respondido a la pregunta
         return totales, correctas, falladas
     except Exception as e:
         print(f"Error: {e}")
