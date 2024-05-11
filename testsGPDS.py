@@ -25,7 +25,6 @@ def leer_pdf(nombre_archivo):
 
             # Mezclar la lista para obtener el orden aleatorio
             random.shuffle(paginas)
-            cont=1
             for pagina_num in paginas:
                 pagina = lector_pdf.pages[pagina_num]
                 texto = pagina.extract_text()
