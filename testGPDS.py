@@ -4,14 +4,14 @@ from PyPDF2 import PdfReader
 import re
 import random
 
-def calcular_nota(respuestas_totales, respuestas_correctas):
-    respuestas_incorrectas = respuestas_totales - respuestas_correctas
+def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrectas):
     nota = (respuestas_correctas - (respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
 
 def leer_pdf(nombre_archivo):
     correctas = 0
     totales = 0
+    falladas = 0
     try:
         with open(nombre_archivo, 'rb') as archivo_pdf:
             lector_pdf = PdfReader(archivo_pdf)
@@ -48,21 +48,27 @@ def leer_pdf(nombre_archivo):
                     print(f"Respuesta correcta: {respuesta_correcta}\n")
                     if entrada.capitalize() == respuesta_correcta:
                         correctas+=1
+                    elif entrada != "":
+                        falladas+=1
                     totales+=1           
                 else:
                     print(f"No se encontró un patrón válido en la página {pagina_num + 1}\n")
-            return totales, correctas
+            return totales, correctas, falladas
     except FileNotFoundError:
         print("El archivo no existe.")
     except Exception as e:
         print(f"Error: {e}")
 
 if __name__ == "__main__": 
+
     if len(sys.argv) != 2:
         print("Uso: python3 main.py fichero.pdf")
         sys.exit(1)
         
-    totales, correctas = leer_pdf(sys.argv[1])
+    totales, correctas, falladas = leer_pdf(sys.argv[1])
     print("Correctas: ",correctas)
+    print("Falladas: ",falladas)
+    print("Blanco: ",totales-correctas-falladas)
+
     print("Totales: ",totales)
-    print("Nota: ", calcular_nota(totales, correctas))
+    print("Nota: ", calcular_nota(totales, correctas, falladas))
