@@ -8,6 +8,8 @@ import textwrap
 RESPUESTAS_VALIDAS = ["A","B","C","D",""]
 
 def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrectas):
+    if respuestas_totales <= 0:
+        return 0
     nota = (respuestas_correctas - (respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
 
