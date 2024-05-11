@@ -3,10 +3,10 @@ import sys
 from PyPDF2 import PdfReader
 import re
 import random
+import textwrap
 
-RESPUESTAS_VALIDAS = ["A","B","C","D",""]
-
-def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrectas):
+def calcular_nota(respuestas_totales, respuestas_correctas):
+    respuestas_incorrectas = respuestas_totales - respuestas_correctas
     nota = (respuestas_correctas - (respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
 
@@ -14,6 +14,7 @@ def leer_pdf(nombre_archivo):
     correctas = 0
     totales = 0
     falladas = 0
+    wrap = textwrap.TextWrapper(width=80)
     try:
         with open(nombre_archivo, 'rb') as archivo_pdf:
             lector_pdf = PdfReader(archivo_pdf)
@@ -25,62 +26,65 @@ def leer_pdf(nombre_archivo):
 
             # Mezclar la lista para obtener el orden aleatorio
             random.shuffle(paginas)
+            cnt = 0
             for pagina_num in paginas:
                 pagina = lector_pdf.pages[pagina_num]
                 texto = pagina.extract_text()
 
                 match = re.search(patron, texto, re.DOTALL)
-                
+
                 if match:
+                    cnt += 1
                     #pregunta_numero = match.group(1).replace("\n", " ")
-                    pregunta = match.group(2).replace("\n", " ")
-                    respuesta_b = match.group(4).replace("\n", " ")
-                    respuesta_a = match.group(3).replace("\n", " ")
-                    respuesta_c = match.group(5).replace("\n", " ")
-                    respuesta_d = match.group(6).replace("\n", " ")
+                    pregunta = wrap.fill( match.group(2).replace("\n", " ")  )
+                    respuesta_b = wrap.fill( match.group(4).replace("\n", " ") )
+                    respuesta_a = wrap.fill( match.group(3).replace("\n", " ") )
+                    respuesta_c = wrap.fill( match.group(5).replace("\n", " ") )
+                    respuesta_d = wrap.fill( match.group(6).replace("\n", " ") )
                     respuesta_correcta = match.group(7).replace("\n", " ")
 
-                    totales+=1
-
-                    print(f"Pregunta número: {totales}")
+                    print(f"Pregunta N.º {cnt}")
+                    print()
                     print(pregunta)
+                    print()
                     print(f"A: {respuesta_a}")
                     print(f"B: {respuesta_b}")
                     print(f"C: {respuesta_c}")
                     print(f"D: {respuesta_d}")
-                    entrada = input("Introduce tu respuesta:").capitalize()
-                    while entrada not in RESPUESTAS_VALIDAS:
-                        print("\tRespuesta no comprendida")
-                        entrada = input("Introduce tu respuesta:").capitalize()
-                    if entrada == respuesta_correcta:
+                    print()
+                    entrada = input("Introduce tu respuesta: ")
+                    if entrada.capitalize() == respuesta_correcta:
+                        print(f"Acierto. Respuesta correcta: {respuesta_correcta}\n")
                         correctas+=1
-                        print("\tAcierto registrado")
                     elif entrada != "":
                         falladas+=1
-                        print("\tFallo registrado")
+                        print(f"Fallo. Respuesta correcta: {respuesta_correcta}\n")
                     else:
-                        print("\tBlanco registrado")
-                    
-                    print(f"Respuesta correcta: {respuesta_correcta}\n")
-
+                        print(f"Respuesta correcta: {respuesta_correcta}\n")
+                    totales+=1
                 else:
-                    print(f"No se encontró un patrón válido en la página {pagina_num + 1}\n")
+                    continue
+                    #print(f"No se encontró un patrón válido en la página {pagina_num + 1}\n")
             return totales, correctas, falladas
     except FileNotFoundError:
         print("El archivo no existe.")
+    except KeyboardInterrupt:
+        return totales, correctas, falladas
     except Exception as e:
         print(f"Error: {e}")
+    return totales, correctas, falladas
 
-if __name__ == "__main__": 
-
+if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Uso: python3 main.py fichero.pdf")
         sys.exit(1)
-        
+
     totales, correctas, falladas = leer_pdf(sys.argv[1])
+
+    print()
     print("Correctas: ",correctas)
     print("Falladas: ",falladas)
     print("Blanco: ",totales-correctas-falladas)
 
     print("Totales: ",totales)
-    print("Nota: ", calcular_nota(totales, correctas, falladas))
+    print("Nota: ", calcular_nota(totales, correctas))
