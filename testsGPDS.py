@@ -15,6 +15,14 @@ def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrect
     nota = (respuestas_correctas - math.floor(respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
 
+def mostrar_nota(totales, correctas, falladas):
+    print("Correctas: ",correctas)
+    print("Falladas: ",falladas)
+    print("Blanco: ",totales-correctas-falladas)
+
+    print("Totales: ",totales)
+    print("Nota: ", calcular_nota(totales, correctas, falladas))
+
 def leer_pdf(args):
     correctas = 0
     totales = 0
@@ -62,6 +70,7 @@ def leer_pdf(args):
                     entrada = input("Introduce tu respuesta:").capitalize()
                     while entrada not in RESPUESTAS_VALIDAS:
                         print("\tRespuesta no comprendida")
+                        mostrar_nota(totales-1, correctas, falladas)
                         entrada = input("Introduce tu respuesta:").capitalize()
                     if entrada == respuesta_correcta:
                         correctas+=1
@@ -100,9 +109,4 @@ if __name__ == "__main__":
 
     totales, correctas, falladas = leer_pdf(args)
     print()
-    print("Correctas: ",correctas)
-    print("Falladas: ",falladas)
-    print("Blanco: ",totales-correctas-falladas)
-
-    print("Totales: ",totales)
-    print("Nota: ", calcular_nota(totales, correctas, falladas))
+    mostrar_nota(totales, correctas, falladas)
