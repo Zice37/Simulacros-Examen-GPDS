@@ -39,7 +39,7 @@ def leer_pdf(args):
 
                 if args.numeropreguntas != None:
                     if args.numeropreguntas <= totales:
-                        break;
+                        break
 
                 if match:
                     #pregunta_numero = match.group(1).replace("\n", " ")
