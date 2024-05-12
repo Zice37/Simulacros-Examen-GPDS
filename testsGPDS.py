@@ -3,17 +3,22 @@ import sys
 from PyPDF2 import PdfReader
 import re
 import random
+import textwrap
+import math
 
 RESPUESTAS_VALIDAS = ["A","B","C","D",""]
 
 def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrectas):
-    nota = (respuestas_correctas - (respuestas_incorrectas / 3)) / respuestas_totales * 10
+    if respuestas_totales <= 0:
+        return 0
+    nota = (respuestas_correctas - math.floor(respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
 
 def leer_pdf(nombre_archivo):
     correctas = 0
     totales = 0
     falladas = 0
+    wrap = textwrap.TextWrapper(width=80)
     try:
         with open(nombre_archivo, 'rb') as archivo_pdf:
             lector_pdf = PdfReader(archivo_pdf)
@@ -30,14 +35,14 @@ def leer_pdf(nombre_archivo):
                 texto = pagina.extract_text()
 
                 match = re.search(patron, texto, re.DOTALL)
-                
+
                 if match:
                     #pregunta_numero = match.group(1).replace("\n", " ")
-                    pregunta = match.group(2).replace("\n", " ")
-                    respuesta_b = match.group(4).replace("\n", " ")
-                    respuesta_a = match.group(3).replace("\n", " ")
-                    respuesta_c = match.group(5).replace("\n", " ")
-                    respuesta_d = match.group(6).replace("\n", " ")
+                    pregunta = wrap.fill( match.group(2).replace("\n", " ")  )
+                    respuesta_b = wrap.fill( match.group(4).replace("\n", " ") )
+                    respuesta_a = wrap.fill( match.group(3).replace("\n", " ") )
+                    respuesta_c = wrap.fill( match.group(5).replace("\n", " ") )
+                    respuesta_d = wrap.fill( match.group(6).replace("\n", " ") )
                     respuesta_correcta = match.group(7).replace("\n", " ")
 
                     totales+=1
@@ -60,7 +65,7 @@ def leer_pdf(nombre_archivo):
                         print("\tFallo registrado")
                     else:
                         print("\tBlanco registrado")
-                    
+
                     print(f"Respuesta correcta: {respuesta_correcta}\n")
 
                 else:
@@ -68,16 +73,21 @@ def leer_pdf(nombre_archivo):
             return totales, correctas, falladas
     except FileNotFoundError:
         print("El archivo no existe.")
+    except KeyboardInterrupt:
+        totales-=1  #asumimos que si cierra por teclado no ha respondido a la pregunta
+        return totales, correctas, falladas
     except Exception as e:
         print(f"Error: {e}")
+    return totales, correctas, falladas
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
 
     if len(sys.argv) != 2:
         print("Uso: python3 main.py fichero.pdf")
         sys.exit(1)
-        
+
     totales, correctas, falladas = leer_pdf(sys.argv[1])
+    print()
     print("Correctas: ",correctas)
     print("Falladas: ",falladas)
     print("Blanco: ",totales-correctas-falladas)
