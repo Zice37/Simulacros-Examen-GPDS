@@ -66,17 +66,16 @@ def leer_pdf(args):
                     if entrada == respuesta_correcta:
                         correctas+=1
                         print("\tAcierto registrado")
-                    elif entrada != "":
-                        falladas+=1
-                        print("\tFallo registrado")
                     elif entrada == "S":
                         totales-=1
                         print("\tSalto de pregunta registrado")
+                    elif entrada != "":
+                        falladas+=1
+                        print("\tFallo registrado")
                     else:
                         print("\tBlanco registrado")
 
                     print(f"Respuesta correcta: {respuesta_correcta}\n")
-
                 else:
                     print(f"No se encontró un patrón válido en la página {pagina_num + 1}\n")
             return totales, correctas, falladas
