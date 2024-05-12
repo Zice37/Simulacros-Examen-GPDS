@@ -49,10 +49,15 @@ def leer_pdf(nombre_archivo):
 
                     print(f"Pregunta número: {totales}")
                     print(pregunta)
+                    print()
                     print(f"A: {respuesta_a}")
+                    print()
                     print(f"B: {respuesta_b}")
+                    print()
                     print(f"C: {respuesta_c}")
+                    print()
                     print(f"D: {respuesta_d}")
+                    print()
                     entrada = input("Introduce tu respuesta:").capitalize()
                     while entrada not in RESPUESTAS_VALIDAS:
                         print("\tRespuesta no comprendida")
