@@ -7,14 +7,14 @@ Aun así, se puede cambiar fácilmente la expresión regular con la que se busca
 
 Notas para el uso del programa:
 - Al terminar de analizar todas las páginas del PDF se muestran un resumen del simulacro con el total de preguntas realizadas, la nota, etc.
-- Para dejar en blanco una respuesta simplemente pulsa Enter sin escribir nada
+- Para dejar en blanco una respuesta simplemente pulsa Enter sin escribir nada.
+- En caso de querer terminar el simulacro antes de tiempo, con Ctrl+C se detienen las preguntas y muestra el resumen del simulacro. 
 
 
 # Dependecias
 Si os da algun error de dependecias al ejecutarlo, podeis probar a instalar:
 - PyPDF2
 - regex
+- textwrap
 
 mediante el comando: pip install xxx
-
-# By Daniel Pérez
