@@ -9,6 +9,8 @@ Notas para el uso del programa:
 - Al terminar de analizar todas las páginas del PDF se muestran un resumen del simulacro con el total de preguntas realizadas, la nota, etc.
 - Para dejar en blanco una respuesta simplemente pulsa Enter sin escribir nada.
 - En caso de querer terminar el simulacro antes de tiempo, con Ctrl+C se detienen las preguntas y muestra el resumen del simulacro. 
+- Con el argumento -n, puedes especificar un número máximo de preguntas a realizar en el test. (Nota: si no hay más preguntas en el pdf, se acaba de todos modos)
+- Puedes responder a una pregunta con una 'S' para saltarla y que no cuente en el total de preguntas. Útil cuando no quieres que cuente una pregunta repetida que ya conocías la respuesta.
 
 
 # Dependecias
