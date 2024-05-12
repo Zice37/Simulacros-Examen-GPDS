@@ -5,6 +5,7 @@ import re
 import random
 import textwrap
 import math
+import argparse     # Leer parametros de ejecución
 
 RESPUESTAS_VALIDAS = ["A","B","C","D",""]
 
@@ -14,13 +15,13 @@ def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrect
     nota = (respuestas_correctas - math.floor(respuestas_incorrectas / 3)) / respuestas_totales * 10
     return nota
 
-def leer_pdf(nombre_archivo):
+def leer_pdf(args):
     correctas = 0
     totales = 0
     falladas = 0
     wrap = textwrap.TextWrapper(width=80)
     try:
-        with open(nombre_archivo, 'rb') as archivo_pdf:
+        with open(args.filename, 'rb') as archivo_pdf:
             lector_pdf = PdfReader(archivo_pdf)
             num_paginas = len(lector_pdf.pages)
 
@@ -35,6 +36,10 @@ def leer_pdf(nombre_archivo):
                 texto = pagina.extract_text()
 
                 match = re.search(patron, texto, re.DOTALL)
+
+                if args.numeropreguntas != None:
+                    if args.numeropreguntas <= totales:
+                        break;
 
                 if match:
                     #pregunta_numero = match.group(1).replace("\n", " ")
@@ -54,7 +59,6 @@ def leer_pdf(nombre_archivo):
                     print(f"B: {respuesta_b}\n")
                     print(f"C: {respuesta_c}\n")
                     print(f"D: {respuesta_d}\n")
-                    print()
                     entrada = input("Introduce tu respuesta:").capitalize()
                     while entrada not in RESPUESTAS_VALIDAS:
                         print("\tRespuesta no comprendida")
@@ -87,11 +91,12 @@ def leer_pdf(nombre_archivo):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 2:
-        print("Uso: python3 main.py fichero.pdf")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", "--numeropreguntas", help="Número de preguntas máxima (si no se han excedido las que haya en el documento)", type=int)
+    parser.add_argument("filename", help="Archivo de preguntas PDF")
+    args = parser.parse_args()
 
-    totales, correctas, falladas = leer_pdf(sys.argv[1])
+    totales, correctas, falladas = leer_pdf(args)
     print()
     print("Correctas: ",correctas)
     print("Falladas: ",falladas)
