@@ -7,7 +7,7 @@ import textwrap
 import math
 import argparse     # Leer parametros de ejecución
 
-RESPUESTAS_VALIDAS = ["A","B","C","D",""]
+RESPUESTAS_VALIDAS = ["A","B","C","D","","S"]
 
 def calcular_nota(respuestas_totales, respuestas_correctas, respuestas_incorrectas):
     if respuestas_totales <= 0:
@@ -69,6 +69,9 @@ def leer_pdf(args):
                     elif entrada != "":
                         falladas+=1
                         print("\tFallo registrado")
+                    elif entrada == "S":
+                        totales-=1
+                        print("\tSalto de pregunta registrado")
                     else:
                         print("\tBlanco registrado")
 
